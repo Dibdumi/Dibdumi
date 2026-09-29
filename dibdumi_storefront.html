@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dibdumi — Good Finds. Second Chances.</title>
+<style>
+:root{
+  --ink:#292133; --ink2:#5A2D63; --cream:#FFF3D6; --pink:#F26791; --pink2:#D993B2;
+  --blue:#8394E8; --teal:#8EB9A0; --purple:#7B4B83; --lime:#A8B99A; --yellow:#F7D86A;
+  --orange:#F4A34C; --shadow:#4B3154; --panel:#EFE7F2; --white:#fff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  color:var(--ink);
+  font-family:"Trebuchet MS",Verdana,Arial,sans-serif;
+  background:
+    radial-gradient(circle at 10% 20%,rgba(255,255,255,.5) 0 4px,transparent 5px),
+    radial-gradient(circle at 80% 12%,rgba(255,255,255,.35) 0 3px,transparent 4px),
+    linear-gradient(135deg,#4A274F 0%,#6A3D72 42%,#8CA58A 100%);
+  background-size:34px 34px,42px 42px,cover;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.app-shell{
+  width:min(1600px,100%); margin:auto; min-height:100vh; padding:12px;
+  display:grid; grid-template-columns:220px minmax(0,1fr) 240px; gap:12px;
+}
+.panel{
+  border:4px solid var(--ink); border-radius:22px; background:rgba(255,248,234,.96);
+  box-shadow:0 6px 0 var(--shadow), inset 0 0 0 3px rgba(255,255,255,.75);
+}
+.side{position:sticky;top:12px;height:calc(100vh - 24px);display:flex;flex-direction:column;gap:12px}
+.menu-panel,.status-panel,.cart-panel,.news-panel{padding:12px}
+.menu-title,.mini-title{
+  margin:0 0 10px; text-transform:uppercase; letter-spacing:1px; font-weight:1000;
+  text-shadow:2px 2px 0 #fff;
+}
+.menu-title{font-size:24px;display:flex;align-items:center;gap:8px}
+.nav-btn{
+  width:100%; border:3px solid var(--ink); border-radius:14px; padding:13px 10px; margin:6px 0;
+  font-weight:1000; text-transform:uppercase; color:var(--ink); box-shadow:0 4px 0 var(--shadow);
+  display:grid; grid-template-columns:34px 1fr; align-items:center; text-align:left; transition:.18s transform,.18s filter;
+}
+.nav-btn:hover{transform:translateY(-2px) rotate(-.5deg);filter:saturate(1.1)}
+.nav-btn small{display:block;font-size:10px;opacity:.72}
+.nav-btn:nth-of-type(1){background:#F26791}.nav-btn:nth-of-type(2){background:#8394E8}.nav-btn:nth-of-type(3){background:#A8B99A}
+.nav-btn:nth-of-type(4){background:#F7D86A}.nav-btn:nth-of-type(5){background:#7B4B83;color:#fff}.nav-btn:nth-of-type(6){background:#D993B2}.nav-btn:nth-of-type(7){background:#8EB9A0}
+.icon{font-size:24px;text-align:center}
+.player-card{margin-top:auto;background:#2D2132;color:#fff;border-radius:16px;border:3px solid var(--ink);padding:12px;box-shadow:0 5px 0 var(--shadow)}
+.player-card strong{color:var(--lime)}
+.rank{color:var(--yellow);letter-spacing:2px}
+.signin{width:100%;margin-top:10px;background:var(--pink2);border:3px solid var(--ink);border-radius:12px;padding:9px;font-weight:1000;box-shadow:0 4px 0 #4B3154}
+.main{min-width:0;display:flex;flex-direction:column;gap:12px}
+.header{
+  min-height:165px; position:relative; overflow:hidden; padding:18px 24px;
+  background:
+   radial-gradient(circle at 20% 20%,#E5A9C1 0 6px,transparent 7px),
+   radial-gradient(circle at 75% 18%,#B7C7AD 0 7px,transparent 8px),
+   linear-gradient(120deg,#6A3D72 0%,#7B4B83 34%,#8394E8 65%,#A8B99A 100%);
+}
+.header:before,.header:after{content:"";position:absolute;border:4px solid var(--ink);border-radius:50%;opacity:.85}
+.header:before{width:180px;height:180px;left:-70px;bottom:-95px;background:#F26791}
+.header:after{width:150px;height:150px;right:-40px;top:-60px;background:#F7D86A}
+.brand{position:relative;z-index:2;text-align:center;font-weight:1000;font-size:clamp(42px,6vw,84px);line-height:.82;letter-spacing:-4px;color:#F26791;text-shadow:4px 4px 0 #fff,8px 8px 0 var(--ink);transform:rotate(-1deg)}
+.brand span{display:block;color:#A8B99A;font-size:.72em;letter-spacing:-2px}
+.tagline{position:relative;z-index:2;margin:14px auto 0;width:max-content;max-width:90%;padding:8px 16px;background:#F7D86A;border:3px solid var(--ink);border-radius:999px;font-weight:1000;box-shadow:0 4px 0 var(--shadow)}
+.mascot{position:absolute;z-index:3;width:100px;height:100px;border:4px solid var(--ink);border-radius:52% 48% 45% 55%;background:#5A2D63;box-shadow:0 5px 0 var(--shadow)}
+.mascot.left{left:28px;bottom:18px;transform:rotate(-8deg)}.mascot.right{right:28px;bottom:16px;background:#A8B99A;transform:rotate(7deg)}
+.eye{position:absolute;top:34px;width:14px;height:20px;background:#fff;border:3px solid var(--ink);border-radius:50%}.eye:after{content:"";position:absolute;width:5px;height:8px;background:var(--ink);border-radius:50%;left:4px;top:4px}.eye.e1{left:25px}.eye.e2{right:25px}
+.smile{position:absolute;left:35px;top:62px;width:28px;height:12px;border-bottom:4px solid var(--ink);border-radius:0 0 50% 50%}
+.ear{position:absolute;width:34px;height:34px;border:4px solid var(--ink);background:inherit;transform:rotate(45deg);top:-10px}.ear.a{left:6px}.ear.b{right:6px}
+.hero{padding:16px;background:linear-gradient(#6A3D72,#7B4B83 55%,#A8B99A);position:relative;overflow:hidden}
+.hero-inner{border:4px solid var(--ink);border-radius:18px;min-height:330px;padding:36px;position:relative;overflow:hidden;background:
+ linear-gradient(0deg,rgba(255,255,255,.15),rgba(255,255,255,.15)),
+ radial-gradient(circle at 15% 25%,#F7D86A 0 9px,transparent 10px),
+ radial-gradient(circle at 80% 18%,#fff 0 8px,transparent 9px),
+ linear-gradient(135deg,#6A3D72,#8394E8 55%,#A8B99A)}
+.hero h1{position:relative;z-index:2;margin:0;max-width:660px;font-size:clamp(40px,6vw,86px);line-height:.86;text-transform:uppercase;letter-spacing:-3px;color:#F7D86A;text-shadow:4px 4px 0 #fff,8px 8px 0 var(--ink)}
+.hero p{position:relative;z-index:2;font-weight:1000;font-size:18px;max-width:580px;margin:18px 0}
+.cta{position:relative;z-index:2;border:4px solid var(--ink);background:var(--pink);color:white;border-radius:14px;padding:14px 24px;font-weight:1000;font-size:20px;box-shadow:0 6px 0 #4B3154;text-transform:uppercase}
+.cta:hover{transform:translateY(-2px)}
+.world{position:absolute;right:40px;bottom:18px;width:300px;height:210px}
+.island{position:absolute;bottom:0;width:100%;height:70px;background:#A8B99A;border:4px solid var(--ink);border-radius:50% 50% 30% 30%;box-shadow:0 7px 0 #4B3154}
+.shop{position:absolute;right:62px;bottom:48px;width:150px;height:130px;background:#D993B2;border:4px solid var(--ink);border-radius:14px 14px 5px 5px;box-shadow:0 6px 0 #5A2D63}
+.shop:before{content:"SHOP";position:absolute;left:24px;top:16px;background:#fff36a;border:3px solid var(--ink);border-radius:10px;padding:6px 18px;font-weight:1000;transform:rotate(-4deg)}
+.door{position:absolute;left:52px;bottom:0;width:45px;height:60px;background:#8394E8;border:4px solid var(--ink);border-radius:22px 22px 0 0}
+.tree{position:absolute;left:25px;bottom:40px;width:22px;height:90px;background:#a96d42;border:4px solid var(--ink);border-radius:8px}.tree:before,.tree:after{content:"";position:absolute;background:#8EB9A0;border:4px solid var(--ink);border-radius:50%;width:60px;height:48px;top:-25px}.tree:before{left:-35px}.tree:after{left:-2px}
+.section{padding:18px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.section h2{margin:0;font-size:32px;text-transform:uppercase;text-shadow:2px 2px 0 #fff}
+.filters{display:flex;gap:8px;flex-wrap:wrap}.filter{border:3px solid var(--ink);border-radius:999px;padding:8px 13px;font-weight:1000;background:#fff;box-shadow:0 3px 0 var(--shadow)}.filter.active{background:var(--pink)}
+.products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:14px}
+.product{position:relative;background:#fff7ef;border:4px solid var(--ink);border-radius:18px;padding:10px;box-shadow:0 6px 0 var(--shadow);transition:.2s transform;overflow:hidden}
+.product:hover{transform:translateY(-7px) rotate(-.5deg)}
+.product:nth-child(2n){background:#EEF3EE}.product:nth-child(3n){background:#F1E8F3}
+.product-img{aspect-ratio:1/1;border:4px solid var(--ink);border-radius:14px;display:grid;place-items:center;font-size:70px;background:linear-gradient(135deg,#E9C3D2,#C6D0B8);position:relative;overflow:hidden}
+.product-img:before{content:"";position:absolute;inset:8px;border:3px dashed rgba(32,24,58,.35);border-radius:12px}
+.product:nth-child(2) .product-img{background:linear-gradient(135deg,#C6D0B8,#C8B0D0)}.product:nth-child(3) .product-img{background:linear-gradient(135deg,#F6D28A,#D993B2)}.product:nth-child(4) .product-img{background:linear-gradient(135deg,#D7E0CF,#9AB6A1)}.product:nth-child(5) .product-img{background:linear-gradient(135deg,#F7E7A7,#E6B36E)}.product:nth-child(6) .product-img{background:linear-gradient(135deg,#DCC3E0,#BEC6E8)}
+.badge{position:absolute;left:8px;top:8px;background:#ff5d79;border:3px solid var(--ink);border-radius:9px;padding:4px 8px;font-weight:1000;transform:rotate(-4deg);z-index:2}.rare{right:8px;left:auto;background:#fff35d;transform:rotate(5deg)}
+.product h3{margin:10px 0 5px;font-size:16px}.meta{display:flex;align-items:center;justify-content:space-between;gap:8px}.condition{font-size:11px;background:#A8B99A;border:2px solid var(--ink);padding:3px 6px;border-radius:7px;font-weight:800}.price{font-size:20px;font-weight:1000}.add{width:42px;height:42px;border-radius:10px;border:3px solid var(--ink);background:var(--pink2);font-size:20px;box-shadow:0 3px 0 var(--shadow)}
+.bottom-banner{padding:13px 20px;text-align:center;background:linear-gradient(90deg,#5A2D63,#7B4B83,#A8B99A);color:#fff;font-weight:1000;text-transform:uppercase;letter-spacing:.4px}
+.hud{display:grid;grid-template-columns:1fr;gap:12px;align-content:start}
+.hud-top{padding:10px;display:flex;justify-content:space-between;gap:6px;font-weight:1000;background:#2D2132;color:white}.hud-top span{background:#5A2D63;border:2px solid #8F6B98;border-radius:10px;padding:8px 9px}
+.cart-panel{background:#E8D99E}.cart-count{font-size:44px;font-weight:1000;color:var(--pink);text-shadow:2px 2px 0 #fff}.view-cart{width:100%;border:3px solid var(--ink);border-radius:10px;padding:9px;background:var(--pink);color:#fff;font-weight:1000;box-shadow:0 4px 0 #5A2D63}
+.news-panel{background:#D7C4CF}.news-item{background:#fff7e9;border:3px solid var(--ink);border-radius:12px;padding:9px;margin-top:10px;display:grid;grid-template-columns:44px 1fr;gap:8px;align-items:center}.thumb{width:44px;height:44px;border:2px solid var(--ink);border-radius:8px;background:#BFD0B5;display:grid;place-items:center;font-size:24px}.news-item b{font-size:12px;text-transform:uppercase}.news-item p{font-size:11px;margin:2px 0}.tiny{font-size:10px;opacity:.6}
+.mobile-top{display:none}
+@media(max-width:1100px){.app-shell{grid-template-columns:190px 1fr}.hud{display:none}.products{grid-template-columns:repeat(2,1fr)}.world{opacity:.55}}
+@media(max-width:760px){body{background:linear-gradient(160deg,#5A2D63,#A8B99A)}.app-shell{display:block;padding:8px}.side{display:none}.main{gap:8px}.mobile-top{display:flex;justify-content:space-between;align-items:center;padding:10px 12px}.mobile-top button{border:3px solid var(--ink);border-radius:10px;background:var(--pink);color:#fff;padding:8px 10px;font-weight:1000}.header{min-height:140px}.brand{font-size:48px}.mascot{width:70px;height:70px}.mascot .eye{top:22px}.mascot .smile{top:46px;left:24px}.mascot.left{left:10px}.mascot.right{right:10px}.hero-inner{min-height:430px;padding:24px 20px}.hero h1{font-size:52px}.hero p{font-size:16px}.world{width:260px;right:6px;opacity:.45}.products{grid-template-columns:1fr 1fr}.section{padding:12px}.product-img{font-size:52px}}
+@media(max-width:480px){.products{grid-template-columns:1fr}.brand{font-size:40px}.tagline{font-size:12px}.hero h1{font-size:44px}.hero-inner{min-height:390px}.world{display:none}.mascot.right{display:none}}
+.spark{position:absolute;font-size:28px;animation:bob 2.8s ease-in-out infinite}.s1{left:22%;top:12%}.s2{right:22%;top:22%;animation-delay:.8s}.s3{left:44%;bottom:14%;animation-delay:1.2s}@keyframes bob{50%{transform:translateY(-8px) rotate(8deg)}}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(120px);background:#2D2132;color:white;border:3px solid #fff;border-radius:14px;padding:12px 18px;box-shadow:0 5px 0 var(--shadow);font-weight:1000;transition:.25s;z-index:50}.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* Plum + sage brand polish */
+.header,.hero,.section,.menu-panel,.cart-panel,.news-panel{position:relative}
+.header{box-shadow:0 6px 0 #4B3154,inset 0 0 0 3px rgba(255,255,255,.65)}
+.product:nth-child(odd){box-shadow:0 6px 0 #5A2D63}.product:nth-child(even){box-shadow:0 6px 0 #7D9279}
+.filter.active{color:#fff;background:#5A2D63}.filter:hover{background:#A8B99A}
+.cta{background:#F26791}.cta:hover{filter:brightness(1.05) saturate(1.08)}
+
+/* Cherry + cheetah signature layer */
+.cherry-sticker{position:absolute;right:18%;top:16px;z-index:4;font-size:42px;filter:drop-shadow(3px 3px 0 #292133);transform:rotate(9deg)}
+.header:after{background:repeating-radial-gradient(ellipse at 35% 35%,#5A2D63 0 7px,#FFF3D6 8px 18px,#A8B99A 19px 26px)}
+.menu-panel:after,.cart-panel:after,.section:after{content:"";position:absolute;pointer-events:none;opacity:.22;border-radius:14px;background:radial-gradient(ellipse at center,#292133 0 20%,transparent 22%);background-size:28px 19px}
+.menu-panel:after{width:66px;height:28px;right:10px;top:9px;transform:rotate(-8deg)}
+.cart-panel:after{width:78px;height:31px;right:8px;bottom:8px;transform:rotate(5deg)}
+.section:after{width:90px;height:34px;right:18px;top:13px;transform:rotate(-4deg)}
+.product:nth-child(1) .product-img,.product:nth-child(6) .product-img{background-image:radial-gradient(ellipse at 20% 25%,rgba(41,33,51,.18) 0 7px,transparent 8px),linear-gradient(135deg,#E9C3D2,#C6D0B8);background-size:45px 32px,cover}
+.badge:before{content:"<span class="px-cherry"><i></i></span>";font-size:12px;margin-right:3px}.rare:before{content:"★"}
+.arcade-section{padding:18px;overflow:hidden;background:linear-gradient(135deg,#FFF3D6 0 52%,#E8EFE2 52% 100%);position:relative}
+.arcade-section:before{content:"";position:absolute;inset:0;opacity:.08;background-image:radial-gradient(circle,#5A2D63 0 2px,transparent 3px);background-size:22px 22px;pointer-events:none}
+.arcade-copy{position:relative;z-index:1}.arcade-kicker{display:inline-block;background:#F26791;color:#fff;border:3px solid var(--ink);border-radius:9px;padding:5px 9px;font-weight:1000;transform:rotate(-2deg);box-shadow:0 3px 0 var(--shadow)}
+.arcade-copy h2{margin:10px 0 5px;font-size:34px;text-transform:uppercase;text-shadow:2px 2px 0 #fff}.arcade-copy p{margin:0 0 12px;font-weight:800}
+.arcade-stats{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px}.arcade-stats span{background:#2D2132;color:#fff;border:3px solid var(--ink);border-radius:10px;padding:7px 11px;font-weight:1000;box-shadow:0 3px 0 #5A2D63}.arcade-stats b{color:#F7D86A}
+.game-wrap{position:relative;z-index:1;border:4px solid var(--ink);border-radius:18px;background:#B9C8AC;padding:10px;box-shadow:0 6px 0 var(--shadow);overflow:hidden}
+.cheetah-trim:before{content:"";position:absolute;left:0;right:0;top:0;height:12px;background:radial-gradient(ellipse at 20% 45%,#5A2D63 0 5px,#292133 6px 8px,transparent 9px),#A8B99A;background-size:30px 18px;z-index:3;pointer-events:none}
+#cherryGame{display:block;width:100%;height:auto;max-height:300px;background:linear-gradient(#C6D3BB 0 66%,#FFF3D6 66%);border-radius:10px;outline:none;touch-action:manipulation}
+#cherryGame:focus{box-shadow:inset 0 0 0 4px #F7D86A}
+.game-overlay{position:absolute;inset:10px;display:grid;place-items:center;background:rgba(45,33,50,.22);border-radius:10px;z-index:4}.game-overlay.hidden{display:none}.overlay-card{max-width:360px;text-align:center;background:#FFF3D6;border:4px solid var(--ink);border-radius:16px;padding:18px;box-shadow:0 6px 0 var(--shadow)}.overlay-card strong{display:block;font-size:25px;color:#5A2D63}.overlay-card span{display:block;margin:8px 0 13px;font-weight:800}.overlay-card button,.game-controls button{border:3px solid var(--ink);border-radius:11px;background:#F26791;color:#fff;padding:10px 16px;font-weight:1000;box-shadow:0 4px 0 var(--shadow)}
+.game-controls{position:relative;z-index:1;display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:12px}.game-controls button:nth-child(2){background:#8394E8}.game-controls span{font-size:12px;font-weight:900;margin-left:auto}
+@media(max-width:760px){.cherry-sticker{right:9%;font-size:30px}.arcade-section{padding:12px}.arcade-copy h2{font-size:28px}.game-wrap{padding:7px}.game-overlay{inset:7px}.overlay-card{padding:13px}.game-controls span{width:100%;margin-left:0}.nav-btn:nth-of-type(7){background:#F4A34C}.nav-btn:nth-of-type(8){background:#8EB9A0}}
+
+
+/* =========================================================
+   STOREFRONT REDESIGN — shop first, playful world second
+   Plum + sage + cream + cherry + cheetah
+   ========================================================= */
+:root{
+  --plum:#5A2D63;
+  --deep-plum:#35243B;
+  --sage:#A8B99A;
+  --sage-dark:#7D9279;
+  --cream:#FFF3D6;
+  --paper:#FFF9EE;
+  --cherry:#C84862;
+  --pink-soft:#D993B2;
+  --gold:#F3C85B;
+  --ink:#292133;
+}
+
+/* Wider, calmer retail shell */
+body{
+  background:
+    radial-gradient(circle at 8% 12%,rgba(255,255,255,.35) 0 3px,transparent 4px),
+    linear-gradient(135deg,#4A274F 0%,#5A2D63 38%,#7D9279 100%);
+}
+.app-shell{
+  width:min(1520px,100%);
+  grid-template-columns:190px minmax(0,1fr) 220px;
+  gap:12px;
+}
+.panel{border-radius:18px}
+
+/* Left rail is now real shop navigation — playful labels removed */
+.menu-title{font-size:20px}
+.nav-btn{
+  min-height:58px;
+  padding:10px 9px;
+  border-radius:13px;
+  text-transform:none;
+}
+.nav-btn span:not(.icon){font-size:14px}
+.nav-btn small{font-size:10px;text-transform:uppercase;letter-spacing:.55px}
+.player-card{
+  background:linear-gradient(145deg,#35243B,#5A2D63);
+}
+.player-card div:nth-child(2),
+.player-card div:nth-child(3),
+.player-card .rank{display:none}
+.player-card:before{
+  content:"MEMBER PERKS";
+  display:block;
+  color:var(--gold);
+  font-weight:1000;
+  font-size:12px;
+  letter-spacing:1px;
+  margin-bottom:6px;
+}
+.player-card strong{color:#fff}
+.signin{background:var(--sage);color:var(--ink)}
+
+/* Header feels like a branded shop masthead instead of a game splash */
+.header{
+  min-height:150px;
+  padding:18px 22px 18px 178px;
+  background:
+    radial-gradient(circle at 76% 18%,rgba(255,255,255,.34) 0 5px,transparent 6px),
+    linear-gradient(115deg,#4A274F 0%,#5A2D63 42%,#7D9279 100%);
+}
+.header:before{
+  width:126px;height:126px;
+  left:22px;bottom:10px;
+  background:linear-gradient(145deg,#6D3A76,#3C2344);
+  border-color:#251B2A;
+  opacity:1;
+}
+.header:after{
+  width:96px;height:96px;
+  right:22px;top:18px;
+  opacity:.95;
+  background:
+    radial-gradient(ellipse at 25% 30%,#292133 0 7px,transparent 8px),
+    radial-gradient(ellipse at 70% 65%,#292133 0 6px,transparent 7px),
+    radial-gradient(ellipse at 55% 20%,#292133 0 5px,transparent 6px),
+    #A8B99A;
+  background-size:38px 30px;
+}
+.brand{
+  text-align:left;
+  font-size:clamp(44px,5vw,72px);
+  color:#F3C85B;
+  letter-spacing:-3px;
+  transform:none;
+  text-shadow:3px 3px 0 #fff,6px 6px 0 #292133;
+}
+.brand span{
+  display:inline;
+  color:#D993B2;
+  font-size:1em;
+  letter-spacing:-3px;
+}
+.tagline{
+  margin:12px 0 0;
+  background:rgba(255,243,214,.95);
+  width:max-content;
+  box-shadow:0 4px 0 #35243B;
+  font-size:12px;
+  letter-spacing:.8px;
+}
+
+/* Hide old blob mascots; replace with Pip */
+.header > .mascot{display:none}
+.cherry-sticker{right:12%;top:auto;bottom:13px;font-size:34px}
+
+/* Pip character */
+.pip-banner{
+  position:absolute;
+  left:30px;
+  bottom:14px;
+  width:120px;
+  height:118px;
+  z-index:5;
+  filter:drop-shadow(0 6px 0 #292133);
+}
+.pip-body{
+  position:absolute;left:24px;top:33px;width:74px;height:70px;
+  background:#5A2D63;border:4px solid #292133;border-radius:42% 42% 46% 46%;
+}
+.pip-ear{
+  position:absolute;top:15px;width:36px;height:36px;
+  background:#5A2D63;border:4px solid #292133;border-radius:50%;
+}
+.pip-ear.left{left:18px}.pip-ear.right{right:18px}
+.pip-eye{
+  position:absolute;top:54px;width:13px;height:17px;background:#fff;
+  border:3px solid #292133;border-radius:50%;z-index:6;
+}
+.pip-eye.left{left:45px}.pip-eye.right{right:45px}
+.pip-mouth{
+  position:absolute;left:54px;top:79px;width:18px;height:9px;
+  background:#F26791;border:3px solid #292133;border-radius:0 0 14px 14px;z-index:6;
+}
+.pip-arm{
+  position:absolute;width:30px;height:13px;background:#5A2D63;
+  border:4px solid #292133;border-radius:999px;z-index:4;
+}
+.pip-arm.a{left:4px;top:66px;transform:rotate(-25deg)}
+.pip-arm.b{right:3px;top:62px;transform:rotate(28deg)}
+.pip-cherry{
+  position:absolute;left:4px;top:40px;font-size:25px;z-index:8;
+  filter:drop-shadow(2px 2px 0 #292133);
+}
+
+/* Tiny planet — keep the part you loved */
+.shop-planet{
+  position:absolute;right:18px;bottom:13px;width:64px;height:64px;z-index:5;
+  border:4px solid #292133;border-radius:50%;
+  background:
+    radial-gradient(circle at 34% 30%,#D9E2D2 0 7px,transparent 8px),
+    radial-gradient(circle at 65% 58%,#5A2D63 0 9px,transparent 10px),
+    #8394E8;
+  box-shadow:0 5px 0 #35243B;
+}
+.shop-planet:after{
+  content:"";
+  position:absolute;left:-13px;top:26px;width:82px;height:16px;
+  border:5px solid #F3C85B;border-radius:50%;
+  transform:rotate(-14deg);
+}
+.shop-planet:before{
+  content:"★";
+  position:absolute;right:-13px;top:-15px;color:#F3C85B;
+  font-size:24px;text-shadow:2px 2px 0 #292133;
+}
+
+/* Hero becomes merchandise/editorial, not "level up" */
+.hero{
+  padding:0;
+  background:#FFF3D6;
+}
+.hero-inner{
+  min-height:360px;
+  padding:48px 42px;
+  background:
+    linear-gradient(90deg,rgba(255,243,214,.97) 0 53%,rgba(255,243,214,.35) 76%,rgba(255,243,214,.12)),
+    radial-gradient(circle at 83% 24%,#D993B2 0 10px,transparent 11px),
+    radial-gradient(circle at 73% 68%,#A8B99A 0 11px,transparent 12px),
+    linear-gradient(135deg,#D8C3D9,#8394E8 55%,#A8B99A);
+}
+.hero h1{
+  max-width:650px;
+  color:#5A2D63;
+  font-size:clamp(42px,5vw,72px);
+  line-height:.92;
+  text-transform:none;
+  letter-spacing:-3px;
+  text-shadow:3px 3px 0 #fff;
+}
+.hero p{
+  color:#35243B;
+  font-size:17px;
+  max-width:560px;
+  line-height:1.45;
+}
+.cta{
+  background:#5A2D63;
+  border-radius:999px;
+  padding:13px 22px;
+  font-size:15px;
+  letter-spacing:.6px;
+}
+.hero .world{
+  right:28px;bottom:10px;width:330px;height:250px;opacity:1;
+}
+
+/* Turn the floating island into a display vignette */
+.world .island{
+  background:#A8B99A;
+  height:62px;
+}
+.world .shop{
+  right:70px;bottom:53px;width:155px;height:145px;background:#D993B2;
+}
+.world .shop:before{content:"NEW DROP";background:#FFF3D6}
+.world:after{
+  content:"<span class="px-cherry"><i></i></span>  ✦  NEW & VINTAGE  ✦";
+  position:absolute;right:28px;top:3px;
+  background:#FFF3D6;border:3px solid #292133;border-radius:999px;
+  padding:7px 11px;font-weight:1000;font-size:11px;transform:rotate(3deg);
+}
+
+/* More premium shopping cards */
+.section{
+  background:#FFF9EE;
+}
+.section h2{
+  text-transform:none;
+  color:#5A2D63;
+  font-size:30px;
+  letter-spacing:-1px;
+}
+.filters{gap:7px}
+.filter{
+  background:#fffaf1;
+  border-width:2px;
+  box-shadow:none;
+  font-size:11px;
+}
+.filter.active{background:#5A2D63;color:#fff}
+.products{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+}
+.product{
+  border-width:3px;
+  border-radius:17px;
+  background:#FFFBF4 !important;
+  box-shadow:0 5px 0 #5A2D63 !important;
+}
+.product:nth-child(even){box-shadow:0 5px 0 #7D9279 !important}
+.product-img{
+  border-width:3px;
+  background:linear-gradient(145deg,#E8D8DE,#CAD7C3);
+}
+.product-img:before{
+  border:2px solid rgba(90,45,99,.18);
+  border-style:dashed;
+}
+.product h3{font-size:15px}
+.price{color:#35243B}
+.add{background:#A8B99A}
+
+/* Replace game-y right HUD with shop utilities */
+.hud-top{display:none}
+.cart-panel{background:#FFF3D6}
+.news-panel{background:#E7EDE1}
+.cart-count{color:#5A2D63}
+.view-cart{background:#5A2D63}
+
+/* Arcade becomes a compact optional bonus */
+.arcade-section{
+  background:#F2EBDD;
+  padding:16px 18px;
+}
+.arcade-copy{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:12px;
+  align-items:center;
+}
+.arcade-kicker{
+  background:#5A2D63;
+  transform:none;
+  font-size:10px;
+}
+.arcade-copy h2{
+  margin:0;
+  font-size:25px;
+  text-transform:none;
+  color:#5A2D63;
+}
+.arcade-copy p{
+  grid-column:2/4;
+  margin:-6px 0 8px;
+  font-size:12px;
+  font-weight:700;
+}
+.arcade-stats{margin:0}
+.arcade-stats span{font-size:10px;padding:5px 8px}
+.game-wrap{max-width:900px;margin:10px auto 0}
+#cherryGame{max-height:220px}
+.game-controls{max-width:900px;margin:10px auto 0}
+.game-controls button{padding:7px 12px;font-size:11px}
+.bottom-banner{
+  background:linear-gradient(90deg,#35243B,#5A2D63,#7D9279);
+  letter-spacing:.8px;
+  font-size:12px;
+}
+
+/* Remove game wording from the cart toast feel */
+.toast{background:#35243B}
+
+@media(max-width:1100px){
+  .header{padding-left:150px}
+  .pip-banner{transform:scale(.9);transform-origin:left bottom}
+}
+@media(max-width:760px){
+  .header{padding:20px 16px 18px 105px;min-height:135px}
+  .pip-banner{left:8px;transform:scale(.72);transform-origin:left bottom}
+  .shop-planet{width:46px;height:46px;right:10px}
+  .brand{font-size:40px}
+  .hero-inner{padding:30px 22px;min-height:400px}
+  .hero h1{font-size:48px}
+  .hero .world{opacity:.25}
+  .products{grid-template-columns:1fr 1fr}
+  .arcade-copy{display:block}
+  .arcade-copy p{margin-top:6px}
+}
+@media(max-width:480px){
+  .products{grid-template-columns:1fr}
+  .shop-planet{display:none}
+  .brand{font-size:34px}
+}
+
+
+/* =========================================================
+   CHEETAH + PLANET CLUSTER + CART HELPER
+   ========================================================= */
+
+/* Cheetah print: warmer tan with irregular dark spots */
+.header:after{
+  width:96px;height:96px;
+  right:22px;top:18px;
+  opacity:.98;
+  background:
+    radial-gradient(ellipse at 22% 28%,#292133 0 6px,transparent 7px),
+    radial-gradient(ellipse at 72% 66%,#292133 0 7px,transparent 8px),
+    radial-gradient(ellipse at 52% 17%,#5A2D63 0 5px,transparent 6px),
+    radial-gradient(ellipse at 42% 78%,#292133 0 5px,transparent 6px),
+    #D7B47B;
+  background-size:38px 31px;
+}
+.menu-panel:after,.cart-panel:after,.section:after{
+  background:
+    radial-gradient(ellipse at 22% 28%,#292133 0 5px,transparent 6px),
+    radial-gradient(ellipse at 70% 64%,#5A2D63 0 4px,transparent 5px),
+    radial-gradient(ellipse at 45% 78%,#292133 0 4px,transparent 5px);
+  background-size:31px 24px;
+  opacity:.26;
+}
+.cheetah-trim:before{
+  content:"";
+  position:absolute;left:0;right:0;top:0;height:12px;
+  background:
+    radial-gradient(ellipse at 22% 30%,#292133 0 4px,transparent 5px),
+    radial-gradient(ellipse at 70% 62%,#5A2D63 0 3px,transparent 4px),
+    #D7B47B;
+  background-size:30px 18px;
+  z-index:3;pointer-events:none;
+}
+
+/* Planet cluster — striped favorite restored as the hero */
+.planet-cluster{
+  position:absolute;
+  right:18px;
+  bottom:10px;
+  width:132px;
+  height:105px;
+  z-index:5;
+  pointer-events:none;
+}
+.planet-main{
+  position:absolute;
+  right:18px;bottom:8px;
+  width:68px;height:68px;
+  border:4px solid #292133;
+  border-radius:50%;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      #D993B2 0 11px,
+      #8394E8 11px 22px,
+      #F3C85B 22px 33px,
+      #A8B99A 33px 44px
+    );
+  box-shadow:0 5px 0 #35243B;
+  transform:rotate(-8deg);
+}
+.planet-main:after{
+  content:"";
+  position:absolute;
+  left:-16px;top:27px;
+  width:92px;height:18px;
+  border:5px solid #FFF3D6;
+  border-radius:50%;
+  transform:rotate(-13deg);
+  box-shadow:0 0 0 2px #292133;
+}
+.planet-mini{
+  position:absolute;
+  border:3px solid #292133;
+  border-radius:50%;
+  box-shadow:0 3px 0 #35243B;
+}
+.planet-mini.p1{
+  width:34px;height:34px;
+  left:5px;top:10px;
+  background:radial-gradient(circle at 35% 35%,#fff 0 3px,transparent 4px),#A8B99A;
+}
+.planet-mini.p2{
+  width:28px;height:28px;
+  right:2px;top:2px;
+  background:radial-gradient(circle at 60% 40%,#D993B2 0 5px,transparent 6px),#5A2D63;
+}
+.planet-mini.p3{
+  width:22px;height:22px;
+  left:18px;bottom:0;
+  background:#F3C85B;
+}
+.planet-star{
+  position:absolute;
+  color:#FFF3D6;
+  text-shadow:2px 2px 0 #292133;
+  font-size:22px;
+  left:46px;
+  top:0;
+}
+
+/* Cart helper area */
+.cart-helper{
+  margin-top:12px;
+  padding:10px;
+  border:3px solid #292133;
+  border-radius:14px;
+  background:linear-gradient(145deg,#F9E9EE,#E5ECDD);
+  display:grid;
+  grid-template-columns:58px 1fr;
+  gap:8px;
+  align-items:center;
+  position:relative;
+  overflow:hidden;
+}
+.cart-helper .helper-pip{
+  width:54px;height:52px;
+  position:relative;
+}
+.helper-pip .hp-body{
+  position:absolute;left:9px;top:14px;width:38px;height:34px;
+  background:#5A2D63;border:3px solid #292133;border-radius:42%;
+}
+.helper-pip .hp-ear{
+  position:absolute;top:4px;width:18px;height:18px;
+  background:#5A2D63;border:3px solid #292133;border-radius:50%;
+}
+.helper-pip .hp-ear.a{left:7px}.helper-pip .hp-ear.b{right:7px}
+.helper-pip .hp-eye{
+  position:absolute;top:24px;width:5px;height:7px;background:#fff;border-radius:50%;z-index:2
+}
+.helper-pip .hp-eye.a{left:20px}.helper-pip .hp-eye.b{right:20px}
+.helper-pip .hp-cart{
+  position:absolute;
+  right:-8px;bottom:2px;
+  font-size:22px;
+  transform:rotate(-7deg);
+}
+.cart-helper b{
+  display:block;
+  color:#5A2D63;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+.cart-helper span{
+  font-size:11px;
+  line-height:1.25;
+}
+
+/* Add-to-cart flying helper animation */
+.cart-flyer{
+  position:fixed;
+  width:56px;height:56px;
+  z-index:999;
+  pointer-events:none;
+  transition:
+    left .72s cubic-bezier(.2,.8,.2,1),
+    top .72s cubic-bezier(.2,.8,.2,1),
+    transform .72s ease,
+    opacity .2s ease .62s;
+}
+.cart-flyer .fly-pip{
+  width:46px;height:42px;
+  position:absolute;left:0;top:4px;
+  background:#5A2D63;
+  border:3px solid #292133;
+  border-radius:44%;
+}
+.cart-flyer .fly-pip:before,
+.cart-flyer .fly-pip:after{
+  content:"";
+  position:absolute;
+  top:-10px;
+  width:16px;height:16px;
+  background:#5A2D63;
+  border:3px solid #292133;
+  border-radius:50%;
+}
+.cart-flyer .fly-pip:before{left:2px}
+.cart-flyer .fly-pip:after{right:2px}
+.cart-flyer .fly-item{
+  position:absolute;
+  right:-10px;
+  top:-5px;
+  font-size:24px;
+  filter:drop-shadow(2px 2px 0 #292133);
+}
+.cart-flyer.go{
+  transform:translateY(-10px) rotate(8deg) scale(.86);
+  opacity:.2;
+}
+
+/* Cute bag wiggle when helper arrives */
+@keyframes cartWiggle{
+  0%,100%{transform:rotate(0deg) scale(1)}
+  35%{transform:rotate(-4deg) scale(1.04)}
+  70%{transform:rotate(4deg) scale(1.04)}
+}
+.cart-panel.arrive{animation:cartWiggle .45s ease}
+
+@media(max-width:1100px){
+  .planet-cluster{right:8px;transform:scale(.88);transform-origin:right bottom}
+}
+@media(max-width:760px){
+  .planet-cluster{width:105px;height:84px;transform:scale(.72);right:2px}
+}
+@media(max-width:480px){
+  .planet-cluster{display:none}
+}
+
+
+/* =========================================================
+   3D TOY-PLASTIC DEPTH PASS
+   ========================================================= */
+
+:root{
+  --shadow-deep:#241927;
+  --highlight:#fffdf6;
+}
+
+/* Overall shell gets layered depth */
+.panel{
+  border:4px solid #292133;
+  box-shadow:
+    0 8px 0 #3B2A3F,
+    0 14px 22px rgba(31,20,35,.22),
+    inset 0 2px 0 rgba(255,255,255,.9),
+    inset 0 -4px 0 rgba(68,43,73,.12);
+}
+
+/* Raised side navigation */
+.nav-btn{
+  position:relative;
+  border-top-color:#3E3047;
+  box-shadow:
+    0 5px 0 #3B2A3F,
+    0 8px 12px rgba(36,25,39,.18),
+    inset 0 3px 0 rgba(255,255,255,.55),
+    inset 0 -4px 0 rgba(50,34,54,.18);
+}
+.nav-btn:before{
+  content:"";
+  position:absolute;
+  left:7px;right:7px;top:5px;height:28%;
+  border-radius:10px 10px 14px 14px;
+  background:linear-gradient(rgba(255,255,255,.35),rgba(255,255,255,0));
+  pointer-events:none;
+}
+.nav-btn:active{
+  transform:translateY(3px);
+  box-shadow:
+    0 2px 0 #3B2A3F,
+    inset 0 3px 7px rgba(48,31,52,.22);
+}
+
+/* Glossy masthead */
+.header{
+  box-shadow:
+    0 9px 0 #35243B,
+    0 16px 24px rgba(36,25,39,.25),
+    inset 0 3px 0 rgba(255,255,255,.3),
+    inset 0 -7px 0 rgba(35,23,39,.18);
+}
+.header:before{
+  box-shadow:
+    0 8px 0 #241927,
+    inset -12px -14px 0 rgba(38,21,43,.18),
+    inset 10px 10px 0 rgba(255,255,255,.1);
+}
+.brand{
+  filter:drop-shadow(0 5px 0 rgba(38,25,42,.55));
+}
+
+/* Pip gets rounder, toy-like shading */
+.pip-body,.pip-ear{
+  background:
+    radial-gradient(circle at 34% 26%,#8D5A98 0 10%,#6D3C78 28%,#5A2D63 62%,#43204B 100%);
+  box-shadow:
+    inset 7px 8px 0 rgba(255,255,255,.12),
+    inset -8px -9px 0 rgba(37,20,42,.16);
+}
+.pip-eye{
+  box-shadow:
+    inset 0 -3px 0 rgba(180,180,190,.3),
+    0 2px 0 rgba(35,25,39,.35);
+}
+.pip-mouth{
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.25);
+}
+
+/* Planet cluster becomes dimensional */
+.planet-main{
+  box-shadow:
+    0 8px 0 #35243B,
+    0 12px 16px rgba(36,25,39,.18),
+    inset 10px 10px 0 rgba(255,255,255,.18),
+    inset -12px -14px 0 rgba(50,35,58,.15);
+}
+.planet-main:after{
+  box-shadow:
+    0 0 0 2px #292133,
+    0 5px 0 #35243B,
+    inset 0 3px 0 rgba(255,255,255,.55);
+}
+.planet-mini{
+  box-shadow:
+    0 5px 0 #35243B,
+    inset 5px 5px 0 rgba(255,255,255,.18),
+    inset -5px -5px 0 rgba(39,26,42,.12);
+}
+
+/* Hero becomes layered plastic/cardboard storefront */
+.hero{
+  box-shadow:
+    0 9px 0 #35243B,
+    0 18px 28px rgba(36,25,39,.18),
+    inset 0 3px 0 rgba(255,255,255,.75);
+}
+.hero-inner{
+  box-shadow:
+    inset 0 0 0 3px rgba(255,255,255,.55),
+    inset 0 -14px 0 rgba(72,52,76,.08);
+}
+.hero-inner:before{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;height:34%;
+  background:linear-gradient(rgba(255,255,255,.28),rgba(255,255,255,0));
+  pointer-events:none;
+}
+.hero h1{
+  text-shadow:
+    0 3px 0 #fff,
+    0 6px 0 rgba(90,45,99,.16);
+}
+
+/* 3D CTA */
+.cta,.view-cart,.signin,.game-controls button,.overlay-card button{
+  box-shadow:
+    0 6px 0 #35243B,
+    0 10px 14px rgba(36,25,39,.16),
+    inset 0 3px 0 rgba(255,255,255,.35),
+    inset 0 -4px 0 rgba(35,25,39,.18);
+}
+.cta:active,.view-cart:active,.signin:active,.game-controls button:active,.overlay-card button:active{
+  transform:translateY(3px);
+  box-shadow:
+    0 3px 0 #35243B,
+    inset 0 3px 7px rgba(35,25,39,.18);
+}
+
+/* Filter pills look like candy buttons */
+.filter{
+  background:linear-gradient(#fffef8,#EFE7D9);
+  box-shadow:
+    0 3px 0 #8C7A73,
+    inset 0 2px 0 #fff;
+}
+.filter.active{
+  background:linear-gradient(#75457D,#5A2D63);
+  box-shadow:
+    0 3px 0 #35243B,
+    inset 0 2px 0 rgba(255,255,255,.2);
+}
+
+/* PRODUCT CARDS: display-case depth */
+.product{
+  transform-style:preserve-3d;
+  box-shadow:
+    0 7px 0 #5A2D63 !important,
+    0 13px 18px rgba(42,28,45,.18),
+    inset 0 2px 0 rgba(255,255,255,.9) !important;
+}
+.product:nth-child(even){
+  box-shadow:
+    0 7px 0 #7D9279 !important,
+    0 13px 18px rgba(42,28,45,.18),
+    inset 0 2px 0 rgba(255,255,255,.9) !important;
+}
+.product:hover{
+  transform:translateY(-8px) rotateX(1.2deg) rotateY(-1.2deg);
+}
+.product-img{
+  position:relative;
+  box-shadow:
+    inset 0 0 0 3px rgba(255,255,255,.45),
+    inset 0 -9px 0 rgba(65,45,70,.08),
+    0 5px 0 rgba(56,39,61,.18);
+}
+.product-img:after{
+  content:"";
+  position:absolute;
+  left:10px;right:10px;top:8px;height:22%;
+  border-radius:12px;
+  background:linear-gradient(rgba(255,255,255,.38),rgba(255,255,255,0));
+  pointer-events:none;
+}
+.badge{
+  box-shadow:
+    0 4px 0 #7F3346,
+    inset 0 2px 0 rgba(255,255,255,.35);
+}
+.add{
+  box-shadow:
+    0 4px 0 #566A52,
+    inset 0 2px 0 rgba(255,255,255,.4);
+}
+.add:active{
+  transform:translateY(2px);
+  box-shadow:0 2px 0 #566A52;
+}
+
+/* Right cart feels like a toy register */
+.cart-panel{
+  box-shadow:
+    0 8px 0 #6B5837,
+    0 14px 20px rgba(42,28,45,.18),
+    inset 0 3px 0 rgba(255,255,255,.75);
+}
+.cart-helper{
+  box-shadow:
+    0 5px 0 #7D9279,
+    inset 0 3px 0 rgba(255,255,255,.65),
+    inset 0 -4px 0 rgba(77,60,85,.08);
+}
+.helper-pip .hp-body,.helper-pip .hp-ear{
+  background:
+    radial-gradient(circle at 35% 25%,#8D5A98 0 12%,#5A2D63 56%,#43204B 100%);
+}
+
+/* Arcade area retains depth but stays secondary */
+.game-wrap{
+  box-shadow:
+    0 7px 0 #5A2D63,
+    0 12px 18px rgba(42,28,45,.16),
+    inset 0 3px 0 rgba(255,255,255,.5);
+}
+.overlay-card{
+  box-shadow:
+    0 7px 0 #5A2D63,
+    0 12px 16px rgba(42,28,45,.22),
+    inset 0 3px 0 rgba(255,255,255,.7);
+}
+
+/* Cheetah strips get an embossed edge */
+.cheetah-trim:before{
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.35),
+    inset 0 -3px 0 rgba(69,45,41,.16);
+}
+
+/* Footer ribbon */
+.bottom-banner{
+  box-shadow:
+    0 7px 0 #241927,
+    inset 0 3px 0 rgba(255,255,255,.14);
+}
+
+/* Little depth on toast */
+.toast{
+  box-shadow:
+    0 6px 0 #1E1520,
+    0 12px 18px rgba(25,16,28,.25),
+    inset 0 2px 0 rgba(255,255,255,.18);
+}
+
+
+/* =========================================================
+   DIBDUMI BRAND SYSTEM
+   ========================================================= */
+.dibdumi-brand{
+  display:flex;
+  align-items:flex-end;
+  gap:0;
+  width:max-content;
+  font-size:clamp(58px,7vw,96px);
+  line-height:.78;
+  letter-spacing:-8px;
+  transform:rotate(-1deg);
+  text-shadow:
+    3px 3px 0 #fff,
+    7px 7px 0 #292133,
+    0 12px 0 rgba(36,25,39,.14);
+}
+.dibdumi-brand span{
+  display:inline-block;
+  font-size:1em;
+  letter-spacing:-8px;
+  position:relative;
+  filter:drop-shadow(0 5px 0 rgba(38,25,42,.35));
+}
+.dibdumi-brand .dibdumi-d{color:#F3C85B;transform:rotate(-4deg)}
+.dibdumi-brand .dibdumi-u{color:#D993B2;transform:translateY(-2px) rotate(2deg)}
+.dibdumi-brand .dibdumi-m{color:#A8B99A;transform:translateY(2px) rotate(-1deg)}
+.dibdumi-brand .dibdumi-i{color:#8394E8;transform:rotate(4deg)}
+.dibdumi-brand .dibdumi-i:after{
+  content:"<span class="px-cherry"><i></i></span>";
+  position:absolute;
+  font-size:.30em;
+  right:-.12em;
+  top:-.55em;
+  text-shadow:none;
+  filter:drop-shadow(2px 2px 0 #292133);
+  transform:rotate(10deg);
+}
+
+/* tiny stitched/plastic seam under logo */
+.header .tagline{
+  border-radius:14px;
+  letter-spacing:.9px;
+  text-transform:uppercase;
+}
+
+/* Make DIBDUMI feel like the center of the world */
+.header:before{
+  left:26px;
+}
+.pip-banner{
+  left:31px;
+}
+.planet-cluster{
+  right:14px;
+}
+
+/* Little Dibdibdumi stamp on product cards */
+.product:after{
+  content:"DIBDUMI";
+  position:absolute;
+  right:10px;
+  bottom:8px;
+  font-size:9px;
+  letter-spacing:1px;
+  font-weight:1000;
+  color:rgba(90,45,99,.28);
+  transform:rotate(-5deg);
+  pointer-events:none;
+}
+
+/* Dibdibdumi club card polish */
+.player-card:before{
+  content:"DIBDUMI CLUB";
+}
+.player-card{
+  position:relative;
+  overflow:hidden;
+}
+.player-card:after{
+  content:"<span class="px-cherry"><i></i></span>";
+  position:absolute;
+  right:8px;
+  top:7px;
+  font-size:21px;
+  opacity:.8;
+  transform:rotate(8deg);
+}
+
+/* Dibdibdumi micro-branding in arcade */
+.arcade-kicker:after{
+  content:"  •  DIBDUMI SIDE QUEST";
+  color:#F3C85B;
+}
+
+/* Slightly bolder home hero identity */
+.hero h1:after{
+  content:"";
+  display:block;
+  width:82px;
+  height:8px;
+  margin-top:14px;
+  border-radius:999px;
+  background:linear-gradient(90deg,#5A2D63,#D993B2,#A8B99A,#F3C85B);
+  box-shadow:0 3px 0 rgba(41,33,51,.18);
+}
+
+@media(max-width:760px){
+  .dibdumi-brand{
+    font-size:50px;
+    letter-spacing:-6px;
+  }
+  .dibdumi-brand span{letter-spacing:-6px}
+}
+@media(max-width:480px){
+  .dibdumi-brand{font-size:42px}
+}
+
+</style>
+
+<style id="dibdumi-production-pass">
+:root{--dd-black:#0d0b0e;--dd-plum:#24131f;--dd-pink:#d96e8f;--dd-sage:#899477;--dd-cream:#ead9bd;--dd-gold:#d1ad75}
+body{background:#0d0b0e!important}
+.header{
+ background:
+ radial-gradient(circle at 18% 20%,rgba(94,45,80,.45),transparent 26%),
+ radial-gradient(circle at 78% 18%,rgba(74,58,88,.38),transparent 23%),
+ linear-gradient(135deg,#0b090c,#20111d 58%,#121015)!important;
+ min-height:220px!important
+}
+.header:after{background:
+ radial-gradient(ellipse at 20% 30%,#1b1517 0 6px,transparent 7px),
+ radial-gradient(ellipse at 72% 65%,#3b2626 0 5px,transparent 6px),
+ #c39b68!important}
+.dibdumi-brand,.dumi-brand{font-size:clamp(54px,7vw,96px)!important;filter:drop-shadow(0 8px 0 #050405)}
+.hero{background:#121014!important}
+.hero-inner{background:
+ linear-gradient(90deg,rgba(16,13,17,.98) 0 48%,rgba(25,16,25,.72) 68%,rgba(28,17,29,.25)),
+ radial-gradient(circle at 82% 28%,#4c304a 0 10px,transparent 11px),
+ linear-gradient(135deg,#171218,#38223a 55%,#66705e)!important}
+.hero h1{color:#c58db8!important;text-shadow:3px 3px 0 #080609!important}
+.hero p{color:#e1d4c6!important}
+.section{background:#171519!important;color:#e9ddcf!important}
+.section h2{color:#e07898!important}
+.product{background:#151216!important;color:#e9ddcf!important;border-color:#65584d!important}
+.product-img{background:linear-gradient(145deg,#4b3543,#1b151b)!important}
+.product h3,.price{color:#ead9bd!important}
+.price{color:#ee7899!important}
+.filter{background:#171419!important;color:#dfd3c5!important;border-color:#62564e!important}
+.filter.active{background:#7e405d!important}
+.cart-panel{background:#171318!important;color:#ead9bd!important}
+.news-panel{background:#191719!important;color:#ead9bd!important}
+.arcade-section{background:#171519!important;color:#ead9bd!important}
+.bottom-banner{background:linear-gradient(90deg,#0c0a0d,#24131f,#111014)!important}
+
+/* Official pixel cherry: no emoji artwork */
+.px-cherry{display:inline-block;position:relative;width:22px;height:22px;vertical-align:-5px;margin:0 4px}
+.px-cherry:before,.px-cherry:after{content:"";position:absolute;width:8px;height:8px;background:#d94f72;border:2px solid #21151c;bottom:1px;box-shadow:inset 2px 2px #f68eaa}
+.px-cherry:before{left:1px}.px-cherry:after{right:1px}
+.px-cherry i{position:absolute;left:10px;top:1px;width:10px;height:9px;border-left:3px solid #758250;border-top:3px solid #758250;transform:rotate(-16deg)}
+.px-cherry i:after{content:"";position:absolute;width:5px;height:4px;background:#87945e;left:4px;top:-5px}
+
+/* Dark cheetah framing */
+.menu-panel,.cart-panel,.section,.arcade-section{border-color:#66594d!important}
+.app-shell:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;background:
+radial-gradient(ellipse at 20% 30%,#d1ad75 0 5px,transparent 6px);background-size:35px 26px}
+
+/* Less kawaii, more curated Y2K resale */
+.nav-btn{filter:saturate(.72) brightness(.78)}
+.nav-btn:hover{filter:saturate(.9) brightness(.95)}
+.tagline{background:#171217!important;color:#e4c8cc!important}
+</style>
+
+</head>
+<body>
+<div class="app-shell">
+  <aside class="side">
+    <div class="panel menu-panel">
+      <h2 class="menu-title">SHOP</h2>
+      <button class="nav-btn" data-scroll="arrivals"><span class="icon">⭐</span><span>New Arrivals<small>Fresh drops</small></span></button>
+      <button class="nav-btn" data-filter="all"><span class="icon">💎</span><span>Shop All<small>Browse everything</small></span></button>
+      <button class="nav-btn" data-scroll="arrivals"><span class="icon">🧸</span><span>Categories<small>Shop by type</small></span></button>
+      <button class="nav-btn" id="cartMenu"><span class="icon">🛍️</span><span>Shopping Bag<small>Your cart</small></span></button>
+      <button class="nav-btn" data-filter="vintage"><span class="icon">🗝️</span><span>Rare + Vintage<small>One-of-a-kind finds</small></span></button>
+      <button class="nav-btn"><span class="icon">💗</span><span>Wishlist / ISO<small>Save your favorites</small></span></button>
+      <button class="nav-btn" data-scroll="arcade"><span class="icon">🎮</span><span>Cherry Dash<small>Bonus mini game</small></span></button>
+      <button class="nav-btn" data-filter="all"><span class="icon">🗺️</span><span>Collections<small>Explore the shop</small></span></button>
+    </div>
+    <div class="player-card">
+      <div><strong>DIBDUMI CLUB</strong></div><div></div><div></div><div class="rank"></div>
+      <button class="signin">SIGN IN / JOIN</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="mobile-top panel"><strong><span class="px-cherry"><i></i></span> DIBDUMI</strong><button id="mobileCart">🛍️ <span class="mobileCount">0</span></button></div>
+    <header class="panel header">
+      <div class="pip-banner" aria-label="Pip mascot holding a cherry">
+        <span class="pip-ear left"></span><span class="pip-ear right"></span>
+        <span class="pip-body"></span>
+        <span class="pip-eye left"></span><span class="pip-eye right"></span>
+        <span class="pip-mouth"></span>
+        <span class="pip-arm a"></span><span class="pip-arm b"></span>
+        <span class="pip-cherry"><span class="px-cherry"><i></i></span></span>
+      </div>
+      <div class="brand dibdumi-brand"><span class="dibdumi-d">D</span><span class="dibdumi-u">U</span><span class="dibdumi-m">M</span><span class="dibdumi-i">I</span></div>
+      <div class="tagline">CURATED FINDS • OLD FAVORITES • LITTLE TREASURES</div>
+      <span class="spark s1">✦</span><span class="spark s2">⭐</span><span class="cherry-sticker"><span class="px-cherry"><i></i></span></span>
+      <div class="planet-cluster" aria-label="decorative planet cluster">
+        <span class="planet-star">★</span>
+        <span class="planet-mini p1"></span>
+        <span class="planet-mini p2"></span>
+        <span class="planet-mini p3"></span>
+        <span class="planet-main"></span>
+      </div>
+    </header>
+
+    <section class="panel hero">
+      <div class="hero-inner">
+        <h1>Good finds deserve a second life.</h1>
+        <p>Curated collectibles, nostalgic favorites, plush, cards, figures and vintage pieces — all gathered into one colorful little corner of the internet.</p>
+        <button class="cta" data-scroll="arrivals">SHOP NEW ARRIVALS <span class="px-cherry"><i></i></span></button>
+        <div class="world"><div class="tree"></div><div class="shop"><div class="door"></div></div><div class="island"></div></div>
+      </div>
+    </section>
+
+    <section class="panel section" id="arrivals">
+      <div class="section-head">
+        <h2>New Arrivals <span class="px-cherry"><i></i></span></h2>
+        <div class="filters">
+          <button class="filter active" data-filter="all">ALL</button>
+          <button class="filter" data-filter="cards">CARDS</button>
+          <button class="filter" data-filter="plush">PLUSH</button>
+          <button class="filter" data-filter="figures">FIGURES</button>
+          <button class="filter" data-filter="vintage">VINTAGE</button>
+        </div>
+      </div>
+      <div class="products">
+        <article class="product" data-category="vintage"><span class="badge">NEW!</span><div class="product-img">🎀</div><h3>Berry Dream Compact</h3><div class="meta"><span class="condition">Excellent</span><span class="price">$34.99</span><button class="add" aria-label="Add to cart">🛍️</button></div></article>
+        <article class="product" data-category="cards"><span class="badge">NEW!</span><span class="badge rare">RARE</span><div class="product-img">🃏</div><h3>Moonlight Foil Card</h3><div class="meta"><span class="condition">NM</span><span class="price">$129.99</span><button class="add">🛍️</button></div></article>
+        <article class="product" data-category="vintage"><div class="product-img">💄</div><h3>2000s Fashion Doll</h3><div class="meta"><span class="condition">Excellent</span><span class="price">$44.00</span><button class="add">🛍️</button></div></article>
+        <article class="product" data-category="plush"><span class="badge">NEW!</span><div class="product-img">🐰</div><h3>Midnight Bunny Plush</h3><div class="meta"><span class="condition">Like New</span><span class="price">$24.99</span><button class="add">🛍️</button></div></article>
+        <article class="product" data-category="figures"><div class="product-img">⚔️</div><h3>Ninja Hero Figure</h3><div class="meta"><span class="condition">Excellent</span><span class="price">$39.99</span><button class="add">🛍️</button></div></article>
+        <article class="product" data-category="vintage"><div class="product-img">🎒</div><h3>Mini Charm Backpack</h3><div class="meta"><span class="condition">Like New</span><span class="price">$29.99</span><button class="add">🛍️</button></div></article>
+      </div>
+    </section>
+
+
+    <section class="panel arcade-section" id="arcade">
+      <div class="arcade-copy">
+        <span class="arcade-kicker">JUST FOR FUN <span class="px-cherry"><i></i></span></span>
+        <h2>Dibdibdumi's Cherry Dash <span class="px-cherry"><i></i></span></h2>
+        <p>Help Pip grab cherries and hop over the clutter! Tap, click the game, or press <b>SPACE</b> to jump.</p>
+        <div class="arcade-stats"><span>SCORE <b id="gameScore">000</b></span><span><span class="px-cherry"><i></i></span> <b id="cherryCount">0</b></span><span>BEST <b id="bestScore">000</b></span></div>
+      </div>
+      <div class="game-wrap cheetah-trim">
+        <canvas id="cherryGame" width="760" height="240" aria-label="Cherry Dash mini game. Jump over obstacles and collect cherries." tabindex="0"></canvas>
+        <div class="game-overlay" id="gameOverlay">
+          <div class="overlay-card"><strong>READY, DIBDUMI CLUB?</strong><span><span class="px-cherry"><i></i></span> collect cherries • 📦 dodge clutter</span><button type="button" id="startGame">PLAY CHERRY DASH</button></div>
+        </div>
+      </div>
+      <div class="game-controls"><button type="button" id="jumpBtn">⬆ JUMP</button><button type="button" id="restartGame">↻ RESTART</button><span>DIBDUMI TIP: double jump is allowed ✨</span></div>
+    </section>
+
+    <div class="panel bottom-banner"><span class="px-cherry"><i></i></span> Found by Dibdibdumi, picked for you! &nbsp; ★ &nbsp; SOLD OUT MEANS IT FOUND A HOME! &nbsp; ★ &nbsp; CHECK BACK FOR NEW TREASURES!</div>
+  </main>
+
+  <aside class="hud">
+    <div class="panel hud-top"><span>💗 250</span><span>⭐ 12</span><span>🪙 3</span></div>
+    <div class="panel cart-panel">
+      <h3 class="mini-title">YOUR BAG</h3><div><span class="cart-count">0</span> ITEMS</div><button class="view-cart">VIEW CART</button>
+      <div class="cart-helper">
+        <div class="helper-pip" aria-hidden="true">
+          <span class="hp-ear a"></span><span class="hp-ear b"></span>
+          <span class="hp-body"></span>
+          <span class="hp-eye a"></span><span class="hp-eye b"></span>
+          <span class="hp-cart">🛒</span>
+        </div>
+        <div><b>Pip's on Dibdibdumi duty <span class="px-cherry"><i></i></span></b><span>Add something cute and he'll bring it over.</span></div>
+      </div>
+    </div>
+    <div class="panel news-panel">
+      <h3 class="mini-title">SHOP NOTES</h3>
+      <div class="news-item"><div class="thumb">🍓</div><div><b>New drop!</b><p>Berry compact just landed.</p><span class="tiny">2h ago</span></div></div>
+      <div class="news-item"><div class="thumb">🃏</div><div><b>Rare alert!</b><p>Foil cards added to the vault.</p><span class="tiny">5h ago</span></div></div>
+      <div class="news-item"><div class="thumb">🧸</div><div><b>Restock!</b><p>Plushies are back in stock.</p><span class="tiny">1d ago</span></div></div>
+      <button class="view-cart" style="margin-top:12px;background:#8394E8">SEE ALL UPDATES</button>
+    </div>
+  </aside>
+</div>
+<div class="toast" id="toast">Added to your Dibdibdumi bag! <span class="px-cherry"><i></i></span></div>
+<script>
+let cart = 0;
+const countEls = [document.querySelector('.cart-count'), ...document.querySelectorAll('.mobileCount')];
+const toast = document.getElementById('toast');
+function updateCart(){ countEls.forEach(el=>el.textContent=cart); }
+function sendPipToCart(btn){
+  const start = btn.getBoundingClientRect();
+  const targetEl = document.querySelector('.cart-panel') || document.querySelector('#mobileCart');
+  if(!targetEl) return;
+  const target = targetEl.getBoundingClientRect();
+  const flyer = document.createElement('div');
+  flyer.className = 'cart-flyer';
+  flyer.innerHTML = '<span class="fly-pip"></span><span class="fly-item">🎁</span>';
+  flyer.style.left = (start.left + start.width/2 - 28) + 'px';
+  flyer.style.top = (start.top + start.height/2 - 28) + 'px';
+  document.body.appendChild(flyer);
+  requestAnimationFrame(()=>{
+    flyer.style.left = (target.left + target.width/2 - 28) + 'px';
+    flyer.style.top = (target.top + 18) + 'px';
+    flyer.classList.add('go');
+  });
+  setTimeout(()=>{
+    targetEl.classList.add('arrive');
+    setTimeout(()=>targetEl.classList.remove('arrive'),500);
+    flyer.remove();
+  },760);
+}
+document.querySelectorAll('.add').forEach(btn=>btn.addEventListener('click',()=>{
+  cart++; updateCart(); sendPipToCart(btn);
+  toast.classList.add('show'); clearTimeout(window.__toast); window.__toast=setTimeout(()=>toast.classList.remove('show'),1500);
+}));
+function filterProducts(cat){
+  document.querySelectorAll('.product').forEach(p=>p.style.display=(cat==='all'||p.dataset.category===cat)?'block':'none');
+  document.querySelectorAll('.filter').forEach(f=>f.classList.toggle('active',f.dataset.filter===cat));
+  document.getElementById('arrivals').scrollIntoView({behavior:'smooth'});
+}
+document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>filterProducts(b.dataset.filter)));
+document.querySelectorAll('[data-scroll]').forEach(b=>b.addEventListener('click',()=>document.getElementById(b.dataset.scroll).scrollIntoView({behavior:'smooth'})));
+function cartAlert(){toast.textContent=cart?`Your bag has ${cart} item${cart===1?'':'s'}! 🛍️`:'Your Dibdibdumi bag is empty! ✨';toast.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>{toast.classList.remove('show');toast.textContent='Added to your Dibdibdumi bag! <span class="px-cherry"><i></i></span>'},1800)}
+document.getElementById('cartMenu').addEventListener('click',cartAlert);document.getElementById('mobileCart').addEventListener('click',cartAlert);document.querySelector('.view-cart').addEventListener('click',cartAlert);
+
+
+// Cherry Dash mini game
+(() => {
+  const canvas = document.getElementById('cherryGame');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const overlay = document.getElementById('gameOverlay');
+  const startBtn = document.getElementById('startGame');
+  const jumpBtn = document.getElementById('jumpBtn');
+  const restartBtn = document.getElementById('restartGame');
+  const scoreEl = document.getElementById('gameScore');
+  const cherryEl = document.getElementById('cherryCount');
+  const bestEl = document.getElementById('bestScore');
+  let raf=0, running=false, last=0, spawn=0, score=0, cherries=0, speed=260, jumps=0;
+  let best=0;
+  const ground=188;
+  const player={x:78,y:ground-46,w:44,h:46,vy:0};
+  let obstacles=[], fruits=[];
+  function reset(){
+    cancelAnimationFrame(raf); running=false; last=0; spawn=0; score=0; cherries=0; speed=260; jumps=0;
+    player.y=ground-player.h; player.vy=0; obstacles=[]; fruits=[];
+    updateHud(); draw();
+  }
+  function updateHud(){scoreEl.textContent=String(Math.floor(score)).padStart(3,'0');cherryEl.textContent=cherries;bestEl.textContent=String(best).padStart(3,'0')}
+  function start(){reset();running=true;overlay.classList.add('hidden');canvas.focus();raf=requestAnimationFrame(loop)}
+  function jump(){if(!running){start();return;} if(jumps<2){player.vy=-440;jumps++;}}
+  function end(){running=false;cancelAnimationFrame(raf);best=Math.max(best,Math.floor(score));updateHud();overlay.classList.remove('hidden');overlay.querySelector('strong').textContent='PIP TRIPPED! TRY AGAIN?';overlay.querySelector('span').textContent=`SCORE ${Math.floor(score)} • <span class="px-cherry"><i></i></span> ${cherries}`;startBtn.textContent='TRY AGAIN <span class="px-cherry"><i></i></span>'}
+  function spawnThing(){
+    if(Math.random()<.68){
+      const h=30+Math.random()*24; obstacles.push({x:canvas.width+15,y:ground-h,w:28+Math.random()*18,h,kind:Math.random()<.5?'box':'mush'});
+    } else { fruits.push({x:canvas.width+20,y:ground-65-Math.random()*72,r:12}); }
+  }
+  function hit(a,b){return a.x<b.x+b.w-6&&a.x+a.w>b.x+5&&a.y<b.y+b.h-4&&a.y+a.h>b.y+4}
+  function loop(t){
+    if(!running)return; if(!last)last=t; const dt=Math.min((t-last)/1000,.035); last=t;
+    score+=dt*10; speed=Math.min(430,260+score*.5); spawn-=dt;
+    if(spawn<=0){spawnThing();spawn=.72+Math.random()*.75;}
+    player.vy+=1120*dt;player.y+=player.vy*dt;if(player.y>=ground-player.h){player.y=ground-player.h;player.vy=0;jumps=0}
+    obstacles.forEach(o=>o.x-=speed*dt);fruits.forEach(f=>f.x-=speed*dt);obstacles=obstacles.filter(o=>o.x>-80);fruits=fruits.filter(f=>f.x>-40&&!f.got);
+    for(const o of obstacles) if(hit(player,o)) return end();
+    for(const f of fruits){const b={x:f.x-f.r,y:f.y-f.r,w:f.r*2,h:f.r*2};if(hit(player,b)){f.got=true;cherries++;score+=25}}
+    updateHud();draw();raf=requestAnimationFrame(loop);
+  }
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const sky=ctx.createLinearGradient(0,0,0,canvas.height);sky.addColorStop(0,'#B8C8AE');sky.addColorStop(.66,'#D9E2D2');sky.addColorStop(.66,'#FFF3D6');ctx.fillStyle=sky;ctx.fillRect(0,0,canvas.width,canvas.height);
+    // background doodles
+    ctx.fillStyle='#8394E8';for(let x=35;x<canvas.width;x+=150){ctx.beginPath();ctx.arc(x,45+(x%3)*8,5,0,Math.PI*2);ctx.fill()}
+    ctx.fillStyle='#F7D86A';ctx.font='24px sans-serif';ctx.fillText('★',150,72);ctx.fillText('★',520,54);ctx.fillText('☁',330,42);
+    ctx.strokeStyle='#292133';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(0,ground+2);ctx.lineTo(canvas.width,ground+2);ctx.stroke();
+    // player: original round-eared critter Pip
+    ctx.fillStyle='#5A2D63';ctx.strokeStyle='#292133';ctx.lineWidth=4;ctx.beginPath();ctx.roundRect(player.x,player.y+8,player.w,player.h-8,16);ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.arc(player.x+10,player.y+10,10,0,Math.PI*2);ctx.arc(player.x+34,player.y+10,10,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(player.x+14,player.y+25,4,0,Math.PI*2);ctx.arc(player.x+30,player.y+25,4,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#F26791';ctx.beginPath();ctx.arc(player.x+22,player.y+36,5,0,Math.PI);ctx.fill();
+    for(const o of obstacles){ctx.strokeStyle='#292133';ctx.lineWidth=4;if(o.kind==='box'){ctx.fillStyle='#F4A34C';ctx.fillRect(o.x,o.y,o.w,o.h);ctx.strokeRect(o.x,o.y,o.w,o.h);ctx.fillStyle='#5A2D63';ctx.fillRect(o.x+7,o.y+8,o.w-14,6)}else{ctx.fillStyle='#A8B99A';ctx.beginPath();ctx.roundRect(o.x+7,o.y+10,o.w-14,o.h-10,8);ctx.fill();ctx.stroke();ctx.fillStyle='#F26791';ctx.beginPath();ctx.arc(o.x+o.w/2,o.y+12,o.w/2,Math.PI,0);ctx.fill();ctx.stroke()}}
+    for(const f of fruits){if(f.got)continue;ctx.font='26px sans-serif';ctx.fillText('<span class="px-cherry"><i></i></span>',f.x-14,f.y+10)}
+  }
+  startBtn.addEventListener('click',start);restartBtn.addEventListener('click',start);jumpBtn.addEventListener('click',jump);canvas.addEventListener('pointerdown',jump);
+  canvas.addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump()}});
+  document.addEventListener('keydown',e=>{if((e.code==='Space'||e.code==='ArrowUp')&&document.activeElement===canvas){e.preventDefault();jump()}});
+  reset();
+})();
+
+</script>
+</body>
+</html>
